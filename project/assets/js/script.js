@@ -1,3 +1,23 @@
+var tasks=[
+  {
+    id: 1,
+    name: "Add localStorage persistence",
+    type:"Web", 
+    status: "in progress"
+  },
+  {
+    id:2,
+    name:"Learn JavaScript",
+    type:"Web",
+    status:"in progress"
+  },
+  {
+    id:3,
+    name: "Refractor code",
+    type:"Web",
+    status:"to do"
+  }
+  ];
 var taskIdCounter = 0;
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
@@ -5,6 +25,7 @@ var pageContentEl = document.querySelector("#page-content");
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompleted =document.querySelector("#tasks-completed");
 var pageContentEl = document.querySelector("#page-content");
+
 
 var taskFormHandler = function(event) {
   event.preventDefault();
@@ -29,7 +50,8 @@ var taskFormHandler = function(event) {
   }else{
     var taskDataObj ={
       name: taskNameInput,
-      type:taskTypeInput
+      type:taskTypeInput,
+      status: "to do"
     };
     createTaskEl(taskDataObj);
   }
@@ -37,6 +59,8 @@ var taskFormHandler = function(event) {
 };
 
 var createTaskEl = function(taskDataObj) {
+  console.log(taskDataObj);
+  console.log(taskDataObj.status);
   // create list item
   var listItemEl = document.createElement("li");
   listItemEl.className = "task-item";
@@ -54,6 +78,12 @@ var createTaskEl = function(taskDataObj) {
   var taskActionsEl = createTaskActions(taskIdCounter);
   listItemEl.appendChild(taskActionsEl);
   tasksToDoEl.appendChild(listItemEl);
+  
+  //we need to add that value as a property to the taskDataObj argument variable
+  //and add the entire object to the tasks array
+  taskDataObj.id =taskIdCounter;
+
+  tasks.push(taskDataObj);
 
   //increase task counter for next unique id
   taskIdCounter++;
@@ -103,6 +133,14 @@ var createTaskActions = function(taskId){
   //set mew values
   taskSelected.querySelector("h3.task-name").textContent = taskName;
   taskSelected.querySelector("span.task-type").textContent = taskType;
+
+  //loop through tasks array and task object with new content
+  for(var i =0; i<tasks.length;i++){
+    if(tasks[i].id ===parseInt(taskId)){
+      tasks[i].name =taskName;
+      tasks[i].type =taskType;
+    }
+  };
   
   alert("Task Updated!");
 
@@ -136,6 +174,8 @@ var createTaskActions = function(taskId){
        formEl.querySelector("#save-task").textContent = "Save Task";
     
 };
+
+
 var deleteTask = function(taskId){
   console.log(taskId);
   var taskSelected = document.querySelector(".task-item[data-task-id='"+taskId +"']");
